@@ -8,8 +8,11 @@ class TestTextNode(unittest.TestCase):
     def test_repr(self):
         node1 = LeafNode("p", "This is a paragraph of text.")
         node2 = LeafNode("a", "Click me!",{"href": "https://www.google.com"})
+        print("\n=============================================================")
         print(node1.to_html())
         print(node2.to_html())
+        print("=============================================================\n")
+
 
     def test_parent(self):
         print("\n==============================================================")
