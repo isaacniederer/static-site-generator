@@ -6,32 +6,16 @@ class HTMLNode():
         self.props = props
 
     def to_html(self):
-        raise NotImplementedError()
+        raise NotImplementedError("to_html is not implemented")
 
     def props_to_html(self):
-        string = None
+        string = "" 
         for item in self.props:
-            if string == None:
-                string = f"{item}={self.props[item]}"
-            else: 
-                string = f"{string} {item}={self.props[item]}"
-
+            string = f"{string} {item}=\"{self.props[item]}\""
         return string
 
     def __repr__(self):
-        tag_string = f"Tag: {self.tag}"
-        value_string = f"Value: {self.value}"
-        children_string = "Children:"
-        if self.children != None:
-            children_string += "\n("
-            for item in self.children:
-                children_string += f"\n{str(item)}"
-            children_string += ")\n"
-        else:
-            children_string += " None"
-        props_string = f"Props: {self.props}"
-        return tag_string + "\n" + value_string + "\n" + children_string + "\n" + props_string + "\n"
-
+        return f"HTMLNode({self.tag}, {self.value}, children: {self.children}, {self.props})"
 
 
 class ParentNode(HTMLNode):
@@ -43,15 +27,15 @@ class ParentNode(HTMLNode):
             raise ValueError("Node has no tag")
         elif len(self.children) == 0:
             raise ValueError("Parent Node has no children")
-        
-        new_str = "<" + self.tag + ">"
-        for item in self.children:
-            if item.tag == None:
-                new_str += item.value
-            else:
-                new_str += "<" + item.tag + ">" + item.value + "</" + item.tag + ">" 
 
-        return new_str + "</" + self.tag + ">"
+        children_text = ""
+        for item in self.children:
+            children_text += item.to_html() 
+
+        return f"<{self.tag}{self.props_to_html()}>{children_text}</{self.tag}>"
+
+    def __repr__(self):
+        return f"ParentNode({self.tag}, children: {self.children}, {self.props})"
 
 
 
@@ -64,11 +48,7 @@ class LeafNode(HTMLNode):
             raise ValueError("All leaf nodes require a value")
         elif self.tag == None:
             return self.value
-        else:
-            if self.props == None:
-                return f"<{self.tag}>{self.value}</{self.tag}>"
-            else:
-                props_string = self.tag
-                for item in self.props:
-                    props_string += f" {item}=\"{str(self.props[item])}\""
-                return f"<{props_string}>{self.value}</{self.tag}>"
+        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+
+    def __repr__(self):
+        return f"LeafNode({self.tag}, {self.value}, {self.props})"
