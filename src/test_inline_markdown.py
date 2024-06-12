@@ -115,5 +115,25 @@ class TestInlineMarkdown(unittest.TestCase):
             text_nodes
         )
 
+    def test_text_to_textnodes2(self):
+        text_nodes = text_to_textnodes("This is *text* with a `code block` and a [link](https://boot.dev)** that contains an **![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png)")
+        self.assertEqual(
+            [
+                TextNode("This is ", text_type_text),
+                TextNode("text", text_type_italic),
+                TextNode(" with a ", text_type_text),
+                TextNode("code block", text_type_code),
+                TextNode(" and a ", text_type_text),
+                TextNode("link", text_type_link, "https://boot.dev"),
+                TextNode(" that contains an ", text_type_bold),
+                TextNode(
+                    "image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"
+                ),
+            ],
+            text_nodes
+        )
+
+
+
 if __name__ == "__main__":
     unittest.main()

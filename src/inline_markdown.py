@@ -46,13 +46,14 @@ def split_nodes_image(old_nodes):
             continue
         string = item.text.split(f"![{new_nodes[0][0]}]({new_nodes[0][1]})",2) 
         for i in range(0, len(new_nodes)):
-            if i == len(new_nodes)-1:
-                new_list.append(TextNode(string[0], text_type_text))
-                new_list.append(TextNode(new_nodes[i][0], text_type_image, new_nodes[i][1]))
-                continue
             new_string = string[1]
-            new_list.append(TextNode(string[0], text_type_text))
+            if string[0] != "":
+                new_list.append(TextNode(string[0], text_type_text))
             new_list.append(TextNode(new_nodes[i][0], text_type_image, new_nodes[i][1]))
+            if i == len(new_nodes)-1:
+                if string[1] != "":
+                    new_list.append(TextNode(string[1], text_type_text))
+                continue
             string = new_string.split(f"![{new_nodes[i+1][0]}]({new_nodes[i+1][1]})", 2)
 
 
@@ -71,13 +72,14 @@ def split_nodes_link(old_nodes):
         if len(string) < 2:
             raise Exception("Links not found in the string")
         for i in range(0, len(new_nodes)):
-            if i == len(new_nodes)-1:
-                new_list.append(TextNode(string[0], text_type_text))
-                new_list.append(TextNode(new_nodes[i][0], text_type_link, new_nodes[i][1]))
-                continue
             new_string = string[1]
-            new_list.append(TextNode(string[0], text_type_text))
+            if string[0] != "":
+                new_list.append(TextNode(string[0], text_type_text))
             new_list.append(TextNode(new_nodes[i][0], text_type_link, new_nodes[i][1]))
+            if i == len(new_nodes)-1:
+                if string[1] != "":
+                    new_list.append(TextNode(string[1], text_type_text))
+                continue
             string = new_string.split(f"[{new_nodes[i+1][0]}]({new_nodes[i+1][1]})", 2)
 
 
@@ -85,7 +87,6 @@ def split_nodes_link(old_nodes):
     return return_list
 
 def text_to_textnodes(text):
-    #new_nodes = []
     new_nodes = split_nodes_delimiter([TextNode(text, text_type_text)], "**", text_type_bold)
     new_nodes = split_nodes_delimiter(new_nodes, "*", text_type_italic)
     new_nodes = split_nodes_delimiter(new_nodes, "`", text_type_code)
