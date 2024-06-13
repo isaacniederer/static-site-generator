@@ -81,6 +81,7 @@ def block_to_html_heading(text):
     return ParentNode(f"h{i}", children)
 
 def block_to_html_code(text):
+    text.replace("```", "")
     node = LeafNode("code", text)
     return ParentNode("pre", [node])
 
